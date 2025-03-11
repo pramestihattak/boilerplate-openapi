@@ -1,0 +1,32 @@
+get:
+  summary: Verify a user's email
+  description:  Verify a user's email
+  operationId: Verification
+  parameters:
+    - $ref: ../../../../../components/parameters/EmailParameter.yaml
+    - $ref: ../../../../../components/parameters/VerificationTokenParameter.yaml
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/AuthVerificationResponse.yaml
+    '400':
+      description: Bad Request - Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorBadRequestResponse.yaml
+    '401':  
+      description: Unauthorized - If JWT Validation Failed
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorUnAuthorizedResponse.yaml
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorInternalServerResponse.yaml

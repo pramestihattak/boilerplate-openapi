@@ -1,0 +1,7 @@
+name: verificationToken
+in: query
+required: true
+description: Verification token for the user
+schema:
+  type: string
+  example: 1234567890ASDOICASC

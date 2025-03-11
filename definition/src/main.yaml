@@ -1,0 +1,54 @@
+openapi: 3.0.1
+info:
+  title: Boilerplate API
+  version: 1.0.0
+tags:
+  - name: auth
+    description: auth service
+paths:
+  /v1/auth/login:
+    $ref: ./paths/api/v1/auth/login/index.yaml
+  /v1/auth/register:
+    $ref: ./paths/api/v1/auth/register/index.yaml
+  /v1/auth/verification:
+    $ref: ./paths/api/v1/auth/verification/index.yaml
+  /v1/auth/me:
+    $ref: ./paths/api/v1/auth/me/index.yaml
+components:
+  securitySchemes:
+    BearerAuth:
+      $ref: ./components/securitySchemes/BearerAuth.yaml
+  parameters:
+    EmailParameter:
+      $ref: ./components/parameters/EmailParameter.yaml
+    VerificationTokenParameter: 
+      $ref: ./components/parameters/VerificationTokenParameter.yaml
+  schemas:
+    AuthRegisterRequest:
+      $ref: ./components/schemas/AuthRegisterRequest.yaml
+    AuthRegisterResponse:
+      $ref: ./components/schemas/AuthRegisterResponse.yaml
+    AuthLoginRequest:
+      $ref: ./components/schemas/AuthLoginRequest.yaml
+    AuthLoginResponse:
+      $ref: ./components/schemas/AuthLoginResponse.yaml
+    AuthVerificationRequest:
+      $ref: ./components/schemas/AuthVerificationRequest.yaml
+    AuthVerificationResponse:
+      $ref: ./components/schemas/AuthVerificationResponse.yaml
+    AuthMeResponse:
+      $ref: ./components/schemas/AuthMeResponse.yaml
+
+    ErrorBadRequestResponse:
+      $ref: ./components/schemas/ErrorBadRequestResponse.yaml
+    ErrorUnAuthorizedResponse:
+      $ref: ./components/schemas/ErrorUnAuthorizedResponse.yaml
+    ErrorInternalServerResponse:
+      $ref: ./components/schemas/ErrorInternalServerResponse.yaml
+    ErrorMessage:
+      $ref: ./components/schemas/ErrorMessage.yaml
+
+
+    
+    
+    

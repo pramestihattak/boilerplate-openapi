@@ -1,0 +1,8 @@
+type: object
+required:
+- error
+properties:
+  error:
+    type: string
+    description: Message explaining the error that happened
+    example: Authorization failed, invalid credentials

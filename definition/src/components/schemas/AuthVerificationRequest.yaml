@@ -1,0 +1,9 @@
+type: object
+required:
+  - email
+  - verification_token
+properties:
+  email:
+    type: string
+  verification_token:
+    type: string

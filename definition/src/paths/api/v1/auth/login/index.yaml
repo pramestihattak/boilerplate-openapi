@@ -1,0 +1,39 @@
+post:
+  tags:
+    - auth
+  summary: Log in an existing user
+  description: Log in an existing user
+  operationId: Login
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ./../../../../../components/schemas/AuthLoginRequest.yaml
+  responses:
+    '200':
+      description: Success
+      headers:
+        X-Jwt:
+          $ref: ./../../../../../components/headers/X-Jwt.yaml
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/AuthLoginResponse.yaml
+    '400':
+      description: Bad Request - Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorBadRequestResponse.yaml
+    '401':  
+      description: Unauthorized - If JWT Validation Failed
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorUnAuthorizedResponse.yaml
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorInternalServerResponse.yaml

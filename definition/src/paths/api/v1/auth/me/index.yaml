@@ -1,0 +1,31 @@
+get:
+  summary: Retrieve user information
+  description: Retrieve user information
+  operationId: Me
+  security:
+  - BearerAuth: []
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/AuthMeResponse.yaml
+    '400':
+      description: Bad Request - Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorBadRequestResponse.yaml
+    '401':  
+      description: Unauthorized - If JWT Validation Failed
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorUnAuthorizedResponse.yaml
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: ./../../../../../components/schemas/ErrorInternalServerResponse.yaml

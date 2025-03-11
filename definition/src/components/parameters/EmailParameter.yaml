@@ -1,0 +1,8 @@
+name: email
+in: query
+required: true
+description: User's email to verify
+schema:
+  type: string
+  format: email
+  example: person@mail.com

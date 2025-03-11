@@ -1,0 +1,8 @@
+type: http
+scheme: bearer
+description: 'Authorization using header parameter with parameter name `Authorization`
+
+  See: https://swagger.io/docs/specification/authentication/bearer-authentication/
+
+  '
+bearerFormat: Bearer <token>
