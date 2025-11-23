@@ -68,9 +68,21 @@ func main() {
 		log.Fatal("fail to parse jwt public key", err.Error())
 	}
 
+	issuer := config.GetString("jwt.issuer")
+	if issuer == "" {
+		issuer = "boilerplate-v2"
+	}
+
+	tokenDurationMinutes := config.GetInt("jwt.tokenDurationMinutes")
+	if tokenDurationMinutes == 0 {
+		tokenDurationMinutes = 15
+	}
+
 	j := jwtPackage.New(&jwtPackage.NewJWTOptions{
-		PrivateKey: privateKey,
-		PublicKey:  publicKey,
+		PrivateKey:    privateKey,
+		PublicKey:     publicKey,
+		Issuer:        issuer,
+		TokenDuration: time.Duration(tokenDurationMinutes) * time.Minute,
 	})
 
 	storage, err := storageAuth.NewStorage(logger, config)

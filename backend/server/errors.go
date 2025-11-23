@@ -61,17 +61,18 @@ func httpError(w http.ResponseWriter, err error) {
 	}
 
 	w.WriteHeader(statusCode)
-	if statusCode == http.StatusUnauthorized {
+	switch statusCode {
+	case http.StatusUnauthorized:
 		json.NewEncoder(w).Encode(api.ErrorUnAuthorizedResponse{
 			Error: api.ErrorMessage(message),
 		})
 		return
-	} else if statusCode == http.StatusBadRequest {
+	case http.StatusBadRequest:
 		json.NewEncoder(w).Encode(api.ErrorBadRequestResponse{
 			Error: api.ErrorMessage(message),
 		})
 		return
-	} else {
+	default:
 		json.NewEncoder(w).Encode(api.ErrorInternalServerResponse{
 			Error: api.ErrorMessage(message),
 		})

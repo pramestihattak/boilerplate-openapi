@@ -10,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	// Postgres storage driver
+	// Postgres driver
 	_ "github.com/lib/pq"
 )
 
