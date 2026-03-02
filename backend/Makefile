@@ -32,6 +32,9 @@ clean-mocks:
 tests:
 	@go test ./... --coverprofile=coverage.out && go tool cover -html=coverage.out
 
+test-integration:
+	@go test ./... -tags integration -v
+
 migrate-up:
 	@cd ./migration && go run migrate.go up
 
