@@ -39,3 +39,7 @@ func NewDbConn(logger logrus.FieldLogger, dbstring string) (*sqlx.DB, error) {
 	db.SetConnMaxLifetime(time.Hour)
 	return db, nil
 }
+
+func (s *Storage) Close() error {
+	return s.db.Close()
+}

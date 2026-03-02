@@ -9,7 +9,7 @@ import (
 
 	"backend/util"
 
-	"github.com/pressly/goose"
+	"github.com/pressly/goose/v3"
 	"github.com/spf13/viper"
 
 	_ "github.com/lib/pq"

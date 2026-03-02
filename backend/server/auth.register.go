@@ -4,7 +4,6 @@ import (
 	"backend/api"
 	"backend/service/auth"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -17,7 +16,7 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out, err := s.Service.Auth.Register(r.Context(), auth.RegisterInput{
+	_, err = s.Service.Auth.Register(r.Context(), auth.RegisterInput{
 		Email:       req.Email,
 		FullName:    req.FullName,
 		Password:    req.Password,
@@ -29,6 +28,6 @@ func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(api.AuthRegisterResponse{
-		Message: fmt.Sprintf("success: %v", out.UserID),
+		Message: "registration successful",
 	})
 }

@@ -84,6 +84,21 @@ func (mr *MockPostgresStoreMockRecorder) Register(ctx, reg any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockPostgresStore)(nil).Register), ctx, reg)
 }
 
+// GetUserByID mocks base method.
+func (m *MockPostgresStore) GetUserByID(ctx context.Context, id string) (*auth_storage.UserOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByID", ctx, id)
+	ret0, _ := ret[0].(*auth_storage.UserOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByID indicates an expected call of GetUserByID.
+func (mr *MockPostgresStoreMockRecorder) GetUserByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockPostgresStore)(nil).GetUserByID), ctx, id)
+}
+
 // UserExist mocks base method.
 func (m *MockPostgresStore) UserExist(ctx context.Context, email string) (int, error) {
 	m.ctrl.T.Helper()
@@ -218,6 +233,21 @@ func (m *MockPostgresReader) Login(ctx context.Context, input *auth_storage.Logi
 func (mr *MockPostgresReaderMockRecorder) Login(ctx, input any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockPostgresReader)(nil).Login), ctx, input)
+}
+
+// GetUserByID mocks base method.
+func (m *MockPostgresReader) GetUserByID(ctx context.Context, id string) (*auth_storage.UserOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByID", ctx, id)
+	ret0, _ := ret[0].(*auth_storage.UserOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByID indicates an expected call of GetUserByID.
+func (mr *MockPostgresReaderMockRecorder) GetUserByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockPostgresReader)(nil).GetUserByID), ctx, id)
 }
 
 // UserExist mocks base method.

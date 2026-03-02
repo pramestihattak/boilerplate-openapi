@@ -15,7 +15,7 @@ var restrictedAuthEndpoints = map[string]bool{
 
 func (s *Server) WithAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !restrictedAuthEndpoints[r.RequestURI] {
+		if !restrictedAuthEndpoints[r.URL.Path] {
 			next.ServeHTTP(w, r)
 			return
 		}

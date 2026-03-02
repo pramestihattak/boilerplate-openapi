@@ -27,7 +27,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := s.JWT.Sign(jwt.Auth{
-		UserID:   out.UserId.String(),
+		UserID:   out.UserID.String(),
 		FullName: out.FullName,
 		Email:    out.Email,
 	})

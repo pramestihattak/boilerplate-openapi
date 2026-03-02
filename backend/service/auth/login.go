@@ -36,7 +36,7 @@ func (s *Auth) Login(ctx context.Context, input LoginInput) (LoginOutput, error)
 	}
 
 	return LoginOutput{
-		UserId:   uuid.MustParse(user.UserID),
+		UserID:   uuid.MustParse(user.UserID),
 		FullName: user.FullName,
 		Email:    user.Email,
 	}, nil

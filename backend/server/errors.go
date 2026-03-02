@@ -22,6 +22,7 @@ var errStatusCode = map[error]int{
 	auth.ErrWrongPassword:       http.StatusBadRequest,
 	ErrVerifyMissingParams:      http.StatusBadRequest,
 	auth.ErrAccountAlreadyExist: http.StatusBadRequest,
+	auth.ErrInvalidInput:        http.StatusBadRequest,
 
 	ErrUnableToParseJSON: http.StatusBadRequest,
 
@@ -32,6 +33,7 @@ var errStatusCode = map[error]int{
 	auth.ErrFailedToLogin:    http.StatusInternalServerError,
 	auth.ErrFailedToVerify:   http.StatusInternalServerError,
 	auth.ErrFailedToRegister: http.StatusInternalServerError,
+	auth.ErrFailedToGetUser:  http.StatusInternalServerError,
 	jwt.ErrFailToSignedToken: http.StatusInternalServerError,
 }
 
@@ -44,6 +46,8 @@ var errMessage = map[error]string{
 	auth.ErrFailedToVerify:      "failed to verify",
 	auth.ErrFailedToRegister:    "failed to register",
 	auth.ErrAccountAlreadyExist: "account already exist",
+	auth.ErrFailedToGetUser:     "failed to get user",
+	auth.ErrInvalidInput:        "invalid input",
 
 	ErrVerifyMissingParams:   "verify missing params",
 	ErrUnableToParseJSON:     "unable to parse json",
@@ -53,6 +57,9 @@ var errMessage = map[error]string{
 
 func httpError(w http.ResponseWriter, err error) {
 	statusCode := errStatusCode[err]
+	if statusCode == 0 {
+		statusCode = http.StatusInternalServerError
+	}
 
 	message := "something went wrong" // default message
 	v, ok := errMessage[err]

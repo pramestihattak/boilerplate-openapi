@@ -21,3 +21,11 @@ type LoginOutput struct {
 	Password string
 	Verified bool
 }
+
+type UserOutput struct {
+	UserID      string `db:"user_id"`
+	Email       string `db:"email"`
+	FullName    string `db:"full_name"`
+	Verified    bool   `db:"verified"`
+	PhoneNumber string `db:"phone_number"`
+}

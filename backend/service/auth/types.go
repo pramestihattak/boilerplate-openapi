@@ -2,9 +2,17 @@ package auth
 
 import "github.com/google/uuid"
 
-type MeInput struct{}
+type MeInput struct {
+	UserID string
+}
 
-type MeOutput struct{}
+type MeOutput struct {
+	UserID      string
+	Email       string
+	FullName    string
+	Verified    bool
+	PhoneNumber string
+}
 
 type RegisterInput struct {
 	Email       string `json:"email"`
@@ -23,7 +31,7 @@ type LoginInput struct {
 }
 
 type LoginOutput struct {
-	UserId   uuid.UUID
+	UserID   uuid.UUID
 	FullName string
 	Email    string
 }

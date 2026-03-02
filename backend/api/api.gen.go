@@ -30,7 +30,11 @@ type AuthLoginResponse struct {
 
 // AuthMeResponse defines model for AuthMeResponse.
 type AuthMeResponse struct {
-	Message string `json:"message"`
+	Email       string             `json:"email"`
+	FullName    string             `json:"full_name"`
+	PhoneNumber *string            `json:"phone_number,omitempty"`
+	UserId      openapi_types.UUID `json:"user_id"`
+	Verified    bool               `json:"verified"`
 }
 
 // AuthRegisterRequest defines model for AuthRegisterRequest.
@@ -70,6 +74,11 @@ type ErrorUnAuthorizedResponse struct {
 	Error string `json:"error"`
 }
 
+// HealthResponse defines model for HealthResponse.
+type HealthResponse struct {
+	Status string `json:"status"`
+}
+
 // EmailParameter defines model for EmailParameter.
 type EmailParameter = openapi_types.Email
 
@@ -93,6 +102,9 @@ type RegisterJSONRequestBody = AuthRegisterRequest
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Health check
+	// (GET /health)
+	HealthCheck(w http.ResponseWriter, r *http.Request)
 	// Log in an existing user
 	// (POST /v1/auth/login)
 	Login(w http.ResponseWriter, r *http.Request)
@@ -110,6 +122,12 @@ type ServerInterface interface {
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
+
+// Health check
+// (GET /health)
+func (_ Unimplemented) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
 
 // Log in an existing user
 // (POST /v1/auth/login)
@@ -143,6 +161,21 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// HealthCheck operation middleware
+func (siw *ServerInterfaceWrapper) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.HealthCheck(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
 
 // Login operation middleware
 func (siw *ServerInterfaceWrapper) Login(w http.ResponseWriter, r *http.Request) {
@@ -354,6 +387,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/health", wrapper.HealthCheck)
+	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/v1/auth/login", wrapper.Login)
 	})

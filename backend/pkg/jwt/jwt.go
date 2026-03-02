@@ -110,7 +110,7 @@ func (j *JWT) IsValidToken(token string) bool {
 
 func (j *JWT) GetClaims(token string) (*Auth, error) {
 	token = strings.TrimPrefix(token, "Bearer ")
-	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.ParseWithClaims(token, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// verify the signing method to prevent algorithm confusion attacks
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -121,17 +121,17 @@ func (j *JWT) GetClaims(token string) (*Auth, error) {
 		return j.PublicKey, nil
 	})
 	if err != nil || !parsedToken.Valid {
-		return nil, fmt.Errorf("invalid token: %v", err.Error())
+		return nil, fmt.Errorf("invalid token: %v", err)
 	}
 
-	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+	claims, ok := parsedToken.Claims.(*JWTClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid token when getting claims: %v", err.Error())
+		return nil, fmt.Errorf("invalid token claims")
 	}
 
 	return &Auth{
-		UserID:   fmt.Sprintf("%s", claims["user_id"]),
-		FullName: fmt.Sprintf("%s", claims["full_name"]),
-		Email:    fmt.Sprintf("%s", claims["email"]),
+		UserID:   claims.UserID,
+		FullName: claims.FullName,
+		Email:    claims.Email,
 	}, nil
 }

@@ -2,6 +2,8 @@ package auth
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
 )
@@ -22,6 +24,9 @@ func (s *Auth) Verify(ctx context.Context, input VerifyInput) (VerifyOutput, err
 
 	userID, err := s.Storage.VerifyUser(ctx, input.Email)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return VerifyOutput{}, ErrAccountNotFound
+		}
 		logger.Errorf("fail to verify user: %v", err.Error())
 		return VerifyOutput{}, ErrFailedToVerify
 	}

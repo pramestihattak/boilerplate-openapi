@@ -45,7 +45,7 @@ func TestLogin(t *testing.T) {
 					}, nil)
 			},
 			wantOut: auth.LoginOutput{
-				UserId:   uuid.MustParse(validUserID),
+				UserID:   uuid.MustParse(validUserID),
 				FullName: "Test User",
 				Email:    "user@example.com",
 			},

@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 
 	"backend/api"
@@ -16,8 +20,8 @@ import (
 	jwtPackage "backend/pkg/jwt"
 	storageAuth "backend/storage/auth"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -26,8 +30,6 @@ import (
 var (
 	logger *logrus.Logger
 	config *viper.Viper
-
-	port = "8090"
 )
 
 func init() {
@@ -91,12 +93,12 @@ func main() {
 	}
 
 	authService := auth.New(logger, storage)
-	service := service.New(service.ServiceInitParams{
+	svc := service.New(service.ServiceInitParams{
 		Auth: authService,
 	})
 
-	server := server.New(server.ServerInitParams{
-		Service: service,
+	srv := server.New(server.ServerInitParams{
+		Service: svc,
 		JWT:     j,
 	})
 
@@ -106,7 +108,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
-	r.Use(server.WithAuth)
+	r.Use(srv.WithAuth)
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
@@ -114,13 +116,44 @@ func main() {
 		})
 	})
 
-	h := api.HandlerFromMux(server, r)
+	h := api.HandlerFromMux(srv, r)
 
+	port := config.GetString("server.port")
+	if port == "" {
+		port = "8090"
+	}
 	addr := fmt.Sprintf("0.0.0.0:%s", port)
-	s := &http.Server{
+	httpServer := &http.Server{
 		Handler: h,
 		Addr:    addr,
 	}
 
-	log.Fatal(s.ListenAndServe())
+	serverErr := make(chan error, 1)
+	go func() {
+		logger.Infof("server listening on %s", addr)
+		serverErr <- httpServer.ListenAndServe()
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	select {
+	case err := <-serverErr:
+		logger.Fatalf("server error: %v", err)
+	case sig := <-quit:
+		logger.Infof("received signal %s, shutting down", sig)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	if err := httpServer.Shutdown(ctx); err != nil {
+		logger.Fatalf("server forced to shutdown: %v", err)
+	}
+
+	if err := storage.Close(); err != nil {
+		logger.Errorf("error closing db: %v", err)
+	}
+
+	logger.Info("server exited gracefully")
 }

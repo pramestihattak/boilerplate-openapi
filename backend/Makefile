@@ -1,3 +1,6 @@
+lint:
+	golangci-lint run ./...
+
 build-backend:
 	@go build -o bin/backend
 
@@ -39,4 +42,4 @@ migrate-up:
 	@cd ./migration && go run migrate.go up
 
 migrate-down:
-	@cd .//migration && go run migrate.go down
+	@cd ./migration && go run migrate.go down

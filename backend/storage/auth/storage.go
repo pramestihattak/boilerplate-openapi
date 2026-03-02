@@ -28,4 +28,5 @@ type PostgresReader interface {
 	CheckedUserForVerification(ctx context.Context, email, verificationToken string) (int, error)
 	UserExist(ctx context.Context, email string) (int, error)
 	Login(ctx context.Context, input *LoginInput) (*LoginOutput, error)
+	GetUserByID(ctx context.Context, id string) (*UserOutput, error)
 }

@@ -10,4 +10,6 @@ var (
 	ErrFailedToVerify      = errors.New("failed to verify")
 	ErrFailedToRegister    = errors.New("failed to register")
 	ErrAccountAlreadyExist = errors.New("account already exist")
+	ErrFailedToGetUser     = errors.New("failed to get user")
+	ErrInvalidInput        = errors.New("invalid input")
 )

@@ -15,25 +15,11 @@ var (
 )
 
 func (s *Storage) VerifyUser(ctx context.Context, email string) (string, error) {
-	txn, err := s.db.Begin()
-	if err != nil {
-		return "", err
-	}
-
 	var id string
-	if err := txn.QueryRowContext(ctx, verifyUserSQL,
-		email,
-	).Scan(&id); err != nil {
+	if err := s.db.QueryRowContext(ctx, verifyUserSQL, email).Scan(&id); err != nil {
 		if err == sql.ErrNoRows {
-			return "", nil
+			return "", sql.ErrNoRows
 		}
-		if err := txn.Rollback(); err != nil {
-			return "", err
-		}
-		return "", err
-	}
-
-	if err := txn.Commit(); err != nil {
 		return "", err
 	}
 	return id, nil

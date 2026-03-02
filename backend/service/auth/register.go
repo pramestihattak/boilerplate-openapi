@@ -4,12 +4,20 @@ import (
 	storageAuth "backend/storage/auth"
 	"backend/util"
 	"context"
+	"net/mail"
 
 	"github.com/google/uuid"
 )
 
 func (s *Auth) Register(ctx context.Context, input RegisterInput) (RegisterOutput, error) {
 	logger := s.Logger.WithField("handler", "Auth.Register")
+
+	if _, err := mail.ParseAddress(input.Email); err != nil {
+		return RegisterOutput{}, ErrInvalidInput
+	}
+	if len(input.Password) < 8 {
+		return RegisterOutput{}, ErrInvalidInput
+	}
 
 	exist, err := s.Storage.UserExist(ctx, input.Email)
 	if err != nil {
